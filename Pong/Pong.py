@@ -3,6 +3,8 @@
 # Part 1: Getting Started
 
 import turtle
+from turtle import *
+import math
 import winsound
 wn = turtle.Screen()
 wn.title('Pong by @BVSSIK')
@@ -43,8 +45,12 @@ ball.shape('square')
 ball.color('white')
 ball.penup()
 ball.goto(0, 0)
-ball.dx = 0.15
-ball.dy = 0.15
+#ball.dx = 0
+#ball.dy = 0
+Vx = 0
+Vy = 0
+V = 0
+A = 0
 
 
 # Pen
@@ -116,9 +122,46 @@ def start():
 
 
 def move_ball():
-    ball.setx(ball.xcor() + ball.dx)
-    ball.sety(ball.ycor() + ball.dy)
+    global V
+    global A 
+    global Vx
+    global Vy
+    # ball.setx(ball.xcor() + ball.dx)
+    # ball.sety(ball.ycor() + ball.dy)
+    #Calculating the velocity
+    V = math.sqrt(Vx**2 + Vy**2)
+    print("V: {}".format(V))
+    print("Vx Before: {}".format(Vx))
+    print("Vy Before: {}".format(Vy))
 
+    #Calculating the angle
+    # if Vx != 0:
+    #     A = math.degrees(math.atan(Vy/Vx))
+    #     if Vy<0 and Vx<0 or Vy>0 and Vx<0:
+    #         A = A - 180
+    #     elif Vy <0:
+    #         A = 270
+    #     else:
+    #         A = 90
+    
+    #moving the turtle
+    ball.seth(A)
+    ball.fd(V/10000)
+
+    #Changing the values of the velocities
+    if Vx> 0:
+        Vx-= 0.2
+    elif Vx<0:
+        Vx += 0.2
+    
+
+    if Vy < -2500:
+        Vy+= 0.5
+    else:
+        Vy -= 0.5
+
+    print("Vx After: {}".format(Vx))
+    print("Vy After: {}".format(Vy))        
 
 
 
@@ -149,7 +192,10 @@ def runGame():
     player_B = turtle.textinput("Player Name", "Player B:")
     pen.write("{player_A}: {score_a}  {player_B}: {score_b}".format(player_A=player_A ,score_a=score_a, player_B=player_B, score_b=score_b), align='center', font=('Courier', 24, 'normal'))
     global go
-
+    global Vx
+    global Vy
+    global A
+    global V
 
 
     winsound.PlaySound("start_music.wav", winsound.SND_ASYNC | winsound.SND_NOSTOP)
@@ -162,7 +208,7 @@ def runGame():
 
         #Move the Ball
         # ball.setx(ball.xcor() + ball.dx)
-        # ball.sety(ball.ycor() + ball.dy)
+        # ball.sety(ball.ycor() + ball.dy) 
         #print(go)
 
         if go:
@@ -170,63 +216,75 @@ def runGame():
             
 
 
-
             #continue
         #Border Chekcing
         if ball.ycor() > 290:
             ball.sety(290)
-            ball.dy *= -1
+            A -= 180 + -(A)
             play_wall_sound()
 
         if ball.ycor() < -290:
             ball.sety(-290)
-            ball.dy *= -1
+            A -= 180 + -(A)
             play_wall_sound()
 
-
+        #Scoring the Goal
 
         if ball.xcor() > 390:
             ball.goto(0, 0)
-            ball.dx *= -1
             score_a += 1
+            A = 180
             pen.clear()
             pen.write("{player_A}: {score_a}  {player_B}: {score_b}".format(player_A=player_A ,score_a=score_a, player_B=player_B, score_b=score_b), align='center', font=('Courier', 24, 'normal'))
             go = False
             menu.write('{player_A} gets a Point\n'.format(player_A=player_A), align='center', font=('Courier', 24, 'normal'))
             menu.write('For next round press "Spacebar"', align='center', font=('Courier', 24, 'normal'))
+            V = 0
+            Vy = 0
+            Vx = 0
         
         if ball.xcor() < -390:
             ball.goto(0, 0)
-            ball.dx *= -1
             score_b += 1
+            A = 0
             pen.clear()
             pen.write("{player_A}: {score_a}  {player_B}: {score_b}".format(player_A=player_A ,score_a=score_a, player_B=player_B, score_b=score_b), align='center', font=('Courier', 24, 'normal'))
             go = False
             menu.write('{player_B} gets a Point\n'.format(player_B=player_B), align='center', font=('Courier', 24, 'normal'))
             menu.write('For next round press "Spacebar"', align='center', font=('Courier', 24, 'normal'))
-        #Paddle Border Checking
-        if paddle_a.ycor() > 250:
-            paddle_a.sety(250)
-        
-        if paddle_a.ycor() < -250:
-            paddle_a.sety(-250)
+            V = 0
+            Vy = 0
+            Vx = 0
 
-        if paddle_b.ycor() > 250:
-            paddle_b.sety(250)
+        #Paddle Border Checking
+        if paddle_a.ycor() > 300:
+            paddle_a.sety(300)
         
-        if paddle_b.ycor() < -250:
-            paddle_b.sety(-250)
+        if paddle_a.ycor() < -300:
+            paddle_a.sety(-300)
+
+        if paddle_b.ycor() > 300:
+            paddle_b.sety(300)
+        
+        if paddle_b.ycor() < -300:
+            paddle_b.sety(-300)
 
         
         #Paddle and Ball Collisions
         if (ball.xcor() > 330 and ball.xcor() < 350) and (ball.ycor() < paddle_b.ycor() + 55) and (ball.ycor() > paddle_b.ycor() - 55):
             ball.setx(330)
-            ball.dx *= -1
+            A -= 180
+            if ball.ycor() > paddle_b.ycor() + 20 and ball.ycor() < paddle_b.ycor() + 55:
+                A -= 20
+                Vy += 500
             winsound.PlaySound('paddleB.wav', winsound.SND_ASYNC)
         
         if ball.xcor() < -330 and ball.xcor() > -350 and (ball.ycor() < paddle_a.ycor() + 55) and (ball.ycor() > paddle_a.ycor() - 55):
             ball.setx(-330)
-            ball.dx *= -1
+            A -= 180
+            if ball.ycor() > paddle_a.ycor() + 20 and ball.ycor() < paddle_a.ycor() + 55:
+                A += 20
+                Vy += 500
             winsound.PlaySound('paddleA.wav', winsound.SND_ASYNC)
 
 
