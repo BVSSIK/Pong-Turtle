@@ -38,7 +38,7 @@ paddle_b.goto(350, 0)
 
 #Ball
 ball = turtle.Turtle()
-ball.speed(0)
+ball.speed(-1)
 ball.shape('square')
 ball.color('white')
 ball.penup()
@@ -222,12 +222,12 @@ def runGame():
         if (ball.xcor() > 330 and ball.xcor() < 350) and (ball.ycor() < paddle_b.ycor() + 55) and (ball.ycor() > paddle_b.ycor() - 55):
             ball.setx(330)
             ball.dx *= -1
-            winsound.PlaySound('C:\My_Code\Learn Python by Building 5 Games\paddleB.wav', winsound.SND_ASYNC)
+            winsound.PlaySound('paddleB.wav', winsound.SND_ASYNC)
         
         if ball.xcor() < -330 and ball.xcor() > -350 and (ball.ycor() < paddle_a.ycor() + 55) and (ball.ycor() > paddle_a.ycor() - 55):
             ball.setx(-330)
             ball.dx *= -1
-            winsound.PlaySound('C:\My_Code\Learn Python by Building 5 Games\paddleA.wav', winsound.SND_ASYNC)
+            winsound.PlaySound('paddleA.wav', winsound.SND_ASYNC)
 
 
 #Game Running
