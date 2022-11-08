@@ -143,7 +143,6 @@ def move_ball():
     #         A = 270
     #     else:
     #         A = 90
-    
     #moving the turtle
     ball.seth(A)
     ball.fd(V/10000)
@@ -220,12 +219,24 @@ def runGame():
         #Border Chekcing
         if ball.ycor() > 290:
             ball.sety(290)
-            A -= 180 + -(A)
+            if A > 90 and A <= 270:
+                transfer = 180 - A * 2
+                A = 360 - abs(transfer)
+            else:
+                A = 360 - A
+
+
+
             play_wall_sound()
 
         if ball.ycor() < -290:
             ball.sety(-290)
-            A -= 180 + -(A)
+            if A > 90 and A <= 270:
+                transfer = 180 - A / 2
+                A = 360 - abs(transfer)
+            else:
+                transfer = 180 - A * 2
+                A += transfer
             play_wall_sound()
 
         #Scoring the Goal
@@ -273,18 +284,28 @@ def runGame():
         #Paddle and Ball Collisions
         if (ball.xcor() > 330 and ball.xcor() < 350) and (ball.ycor() < paddle_b.ycor() + 55) and (ball.ycor() > paddle_b.ycor() - 55):
             ball.setx(330)
-            A -= 180
+            A = 180
             if ball.ycor() > paddle_b.ycor() + 20 and ball.ycor() < paddle_b.ycor() + 55:
-                A -= 20
-                Vy += 500
+                A -= 15
+                if Vy > -7500:
+                    Vy -= 2500
+            elif ball.ycor() < paddle_b.ycor() -20 and ball.ycor() > paddle_b.ycor() - 55:
+                A += 15
+                if Vy > -7500:
+                    Vy -= 2500
             winsound.PlaySound('paddleB.wav', winsound.SND_ASYNC)
         
         if ball.xcor() < -330 and ball.xcor() > -350 and (ball.ycor() < paddle_a.ycor() + 55) and (ball.ycor() > paddle_a.ycor() - 55):
             ball.setx(-330)
-            A -= 180
+            A = 0
             if ball.ycor() > paddle_a.ycor() + 20 and ball.ycor() < paddle_a.ycor() + 55:
-                A += 20
-                Vy += 500
+                A += 15
+                if Vy > -7500:
+                    Vy -= 2500
+            elif ball.ycor() < paddle_a.ycor() -20 and ball.ycor() > paddle_a.ycor() - 55:
+                A -= 15
+                if Vy > -7500:
+                    Vy -= 2500
             winsound.PlaySound('paddleA.wav', winsound.SND_ASYNC)
 
 
